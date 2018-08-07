@@ -1,0 +1,24 @@
+{
+  "name": "transprotation",
+  "version": "1.0.0",
+  "description": "Transprotation System of Ru",
+  "main": "index.js",
+  "scripts": {
+    "test": "transprotation-test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sarowar-al-amin/TransportationSystemOfRU.git"
+  },
+  "author": "Md. Sarowar Al-Amin Sajib",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sarowar-al-amin/TransportationSystemOfRU/issues"
+  },
+  "homepage": "https://github.com/sarowar-al-amin/TransportationSystemOfRU#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongoose": "^5.2.6"
+  }
+}
