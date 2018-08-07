@@ -62,7 +62,7 @@ module.exports = (app) =>{
 
 
    //put method for updating manpower and finance information 
-   app.put('/manpower_finance',schedule.updateManpowerAndFinance);
+   app.put('/manpower_finance/:annualCost',schedule.updateManpowerAndFinance);
 
 
 
