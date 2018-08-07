@@ -9,6 +9,9 @@ const ScheduleLocation = require('../models/schedlude.model2.js');
 //Shift object declaring 
 const ScheduleShift = require('../models/schedule.models3.js');
 
+//Manpower and finance object declaring
+const ManpowerAndFinance = require('../models/schedule.model4.js');
+
 
 //Create and Save a new schedule for transprot
 exports.create = (req, res ) => {
@@ -145,6 +148,37 @@ exports.createMorning = (req, res ) => {
 };
 
 
+//Create and Save a new schedule for Nouhata
+exports.createManAndFin = (req, res ) => {
+    //Checking validation request
+    if(!req.body.annualCost) {
+        return res.status(400).send({
+            message:"Input can not able to fullfill the requirements. "
+        });
+    }
+    // Create Schedule for a bus
+    const manPowerAndFinance = new ManpowerAndFinance({
+        annualCost: req.body.annualCost,
+        studentFarePerYear: req.body.sudentFarePerYear,
+        numberOfWorkers: req.body.numberOfWorkers,
+        chiefOfAuthority: req.body.chiefOfAuthority,
+    });
+
+
+    //Save Schedule in database
+    scheduleShift.save()
+    .then(data => {
+        res.send(data);
+    }).catch (err => {
+        res.status(500).send({
+            message: err.message || "Something goes wrong while creating the schedule!!"
+        });
+    });
+
+ 
+};
+
+
 
 //REtrieve and Return total schedule of transprotation from database
 exports.findAll = (req,res)  => {
@@ -198,6 +232,20 @@ exports.findAllMorning = (req,res)  => {
         });
     });
 };
+//retrive and return total bus schedule for Nouhata
+exports.findManpowerAndFinance = (req,res)  => {
+    ManpowerAndFinance.find()
+    .then(schedules => {
+        res.send(schedules);
+    }).catch(err =>{
+        res.status(500).send({
+            message: err.message || "Some error occured while retrrieving total schedule!!"
+        });
+    });
+};
+
+
+
 
 
 
@@ -492,6 +540,52 @@ ScheduleShift.findByIdAndUpdate(req.params.busNumber, {
 
 
 
+
+
+
+
+//Updating Schedule of a bus of Nouhata
+//for this purpose bus number will be used as a primary key
+
+exports.ManpowerAndFinance = (req, res) => {
+    //Validation request
+    if(!req.body.annualCost) {
+        return res.status(400).send({
+            message:"Annual cost can not be null"
+        });
+    }
+
+
+//find schedule of a bus and update it
+ManpowerAndFinance.findByIdAndUpdate(req.params.busNumber, {
+    annualCost: req.body.annualCost,
+    studentFarePerYear: req.body.sudentFarePerYear,
+    numberOfWorkers: req.body.numberOfWorkers,
+    chiefOfAuthority: req.body.chiefOfAuthority
+   },{new : true }
+).then(schedules => {
+    if(!schedules) { 
+    return res.status(404).send({
+        message: "Manpower and financial information are not found." + req.params.schedulesId
+        });
+    }
+     return res.send(schedules);
+}).catch(err => {
+    if (err.kind == 'ObjectId'){
+        return res.status(404).send ({
+            message: "Manpower and financial information are not found." + req.params.schedulesId
+        });
+    }
+    return res.status(500).send({
+        message: "Error occuredd during to updating schedule " + req.params.schedulesId
+    });
+  });
+
+
+};
+
+
+
 //Deleting shedule of a specific bus 
 exports.delete = (req,res) => {
     Schedule.findByIdAndRemove (req.params.busNumber)
@@ -578,7 +672,7 @@ exports.deleteNouhat = (req,res) => {
 
 
 
-//Deleting shedule of a specific bus from Nouhata routes
+//Deleting schedule of a specific bus from Nouhata route
 
 exports.deleteMorning = (req,res) => {
     ScheduleShift.findByIdAndRemove (req.params.busNumber)
@@ -595,6 +689,33 @@ exports.deleteMorning = (req,res) => {
         if (err.kind == 'ObjectId') {
             return res.status(404).send({
                 message: "Schedule is not found for the bus" + req.params.schedulesId
+            });
+        }
+        return res.status(500).send({
+            message: "Not possible to delete." + req.params.schedulesId        
+        });
+    });
+};
+
+
+
+//Deleting manpower and financial information from database
+
+exports.deleteManpowerAndFinance = (req,res) => {
+    manPowerAndFinance.findByIdAndRemove (req.params.annualCost)
+    .then(schedules => {
+        if(!schedules) {
+            return res.status(404).send({
+                message: "Manpower and financial information is absent from the database !" + req.params.schedulesId
+            });
+        }
+        res.send({
+            message:"Manpower and financial information is deleted from the database."
+        });
+    }).catch(err => {
+        if (err.kind == 'ObjectId') {
+            return res.status(404).send({
+                message: "Manpower and financial information is not found." + req.params.schedulesId
             });
         }
         return res.status(500).send({
