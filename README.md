@@ -86,7 +86,7 @@
 
 * **Success Response:**
 
-  * **Code:** 201 <br />
+  * **Code:** 200 <br />
     **Content:**
     {  
       
@@ -157,7 +157,7 @@
 
 * **Success Response:**
 
-  * **Code:** 202 <br />
+  * **Code:** 200 <br />
     **Content:**
     {  
       
@@ -227,13 +227,11 @@
 
 * **Success Response:**
 
-  * **Code:** 204 <br />
+  * **Code:** 200 <br />
     **Content:** 
     []
 
 	
- 
-* **Error Response:**
 
 * **Error Response:**
 
@@ -348,7 +346,7 @@
 
 * **Success Response:**
 
-  * **Code:** 201 <br />
+  * **Code:** 200 <br />
     **Content:**
     {  
       
@@ -417,7 +415,7 @@
 
 * **Success Response:**
 
-  * **Code:** 202 <br />
+  * **Code:** 200 <br />
     **Content:**
     {  
       
@@ -487,7 +485,7 @@
 
 * **Success Response:**
 
-  * **Code:** 204 <br />
+  * **Code:** 200 <br />
     **Content:** 
     []
 
@@ -605,7 +603,7 @@
 
 * **Success Response:**
 
-  * **Code:** 201 <br />
+  * **Code:** 200 <br />
     **Content:**
     {  
       
@@ -675,7 +673,7 @@
 
 * **Success Response:**
 
-  * **Code:** 202 <br />
+  * **Code:** 200 <br />
     **Content:**
     {  
       
@@ -744,7 +742,7 @@
 
 * **Success Response:**
 
-  * **Code:** 204 <br />
+  * **Code:** 200 <br />
     **Content:** 
     []
 
@@ -860,7 +858,7 @@
 
 * **Success Response:**
 
-  * **Code:** 201 <br />
+  * **Code:** 200 <br />
     **Content:**
     {  
       
@@ -921,7 +919,7 @@
 
 * **Success Response:**
 
-  * **Code:** 202 <br />
+  * **Code:** 200 <br />
     **Content:**
     {  
       
@@ -982,14 +980,12 @@
 
 * **Success Response:**
 
-  * **Code:** 204 <br />
+  * **Code:** 200 <br />
     **Content:** 
     []
 
 	
  
-* **Error Response:**
-
 * **Error Response:**
 
   * **Code:** 404 <br />
