@@ -9,6 +9,9 @@ const ScheduleLocation = require('../models/schedlude.model2.js');
 //Shift object declaring 
 const ScheduleShift = require('../models/schedule.models3.js');
 
+//Manpower and finance object declaring
+const ManpowerAndFinance = require('../models/schedule.model4.js');
+
 
 //Create and Save a new schedule for transprot
 exports.create = (req, res ) => {
@@ -113,7 +116,7 @@ exports.createNouhata = (req, res ) => {
 
 
 
-//Create and Save a new schedule for Nouhata
+//Create and Save a new schedule for morning shift
 exports.createMorning = (req, res ) => {
     //Checking validation request
     if(!req.body.busNumber) {
@@ -133,6 +136,76 @@ exports.createMorning = (req, res ) => {
 
     //Save Schedule in database
     scheduleShift.save()
+    .then(data => {
+        res.send(data);
+    }).catch (err => {
+        res.status(500).send({
+            message: err.message || "Something goes wrong while creating the schedule!!"
+        });
+    });
+
+ 
+};
+
+
+
+
+
+
+//Create and Save a new schedule for mid-day shift
+exports.createMidDay = (req, res ) => {
+    //Checking validation request
+    if(!req.body.busNumber) {
+        return res.status(400).send({
+            message:"Every vichele must have shift. "
+        });
+    }
+    // Create Schedule for a bus
+    const scheduleShift = new ScheduleShift({
+         busNumber: req.body.busNumber || "On Test" ,
+         destination: req.body.destination,
+         arivalTime: req.body.arivalTime,
+         departureTime: req.body.departureTime,
+         passengerType: req.body.passengerType || "Common or Combined Bus"
+    });
+
+
+    //Save Schedule in database
+    scheduleShift.save()
+    .then(data => {
+        res.send(data);
+    }).catch (err => {
+        res.status(500).send({
+            message: err.message || "Something goes wrong while creating the schedule!!"
+        });
+    });
+
+ 
+};
+
+
+
+
+
+//Create and Save a new schedule for Nouhata
+exports.createManAndFin = (req, res ) => {
+    //Checking validation request
+    if(!req.body.annualCost) {
+        return res.status(400).send({
+            message:"Input can not able to fullfill the requirements."
+        });
+    }
+    // Create Schedule for a bus
+    const manPowerAndFinance = new ManpowerAndFinance({
+        annualCost: req.body.annualCost,
+        studentFarePerYear: req.body.studentFarePerYear,
+        numberOfWorkers: req.body.numberOfWorkers,
+        chiefOfAuthority: req.body.chiefOfAuthority
+    });
+
+
+    //Save Schedule in database
+    manPowerAndFinance.save()
     .then(data => {
         res.send(data);
     }).catch (err => {
@@ -187,7 +260,7 @@ exports.findAllNouhata = (req,res)  => {
 
 
 
-//retrive and return total bus schedule for Nouhata
+//retrive and return total bus schedule for Morningshift
 exports.findAllMorning = (req,res)  => {
     ScheduleShift.find()
     .then(schedules => {
@@ -201,25 +274,54 @@ exports.findAllMorning = (req,res)  => {
 
 
 
+//retrive and return total bus schedule for mid day
+exports.findAllMidDay = (req,res)  => {
+    ScheduleShift.find()
+    .then(schedules => {
+        res.send(schedules);
+    }).catch(err =>{
+        res.status(500).send({
+            message: err.message || "Some error occured while retrrieving total schedule!!"
+        });
+    });
+};
+
+
+
+
+//retrive and return information about manpower and 
+exports.findManpowerAndFinance = (req,res)  => {
+    ManpowerAndFinance.find()
+    .then(schedules => {
+        res.send(schedules);
+    }).catch(err =>{
+        res.status(500).send({
+            message: err.message || "Some error occured while retrrieving information about manpower and finance!!"
+        });
+    });
+};
+
+
+
 //Retriving schedule of a single bus
 exports.findOne = (req, res) => {
     Schedule.findById(req.params.busNumber)
     .then(schedules => {
         if(!schedules) {
             return res.status(404).send({
-                message:"Shedule not found for this bus number!!"
+                message:"Schedule not found for this bus number!!"
             });
         }
         res.send(schedules);
     }).catch(err => {
         if (err.kind == 'ObjectId') {
             return res.status(404).send({
-                message: "Shedule not found with the bus number! " + req.paarams.busNumber
+                message: "Schedule not found with the bus number! " + req.paarams.busNumber
             });
         }
 
         return res.status(500).send({
-            message: " Error retriving schedule with bus number " + req.params.busNumber
+            message: " Error retrieving schedule with bus number " + req.params.busNumber
         });
 
     });
@@ -234,7 +336,7 @@ exports.findOneBazar = (req, res) => {
     .then(schedules => {
         if(!schedules) {
             return res.status(404).send({
-                message:"Shedule not found for this bus number!!"
+                message:"Schedule not found for this bus number!!"
             });
         }
         res.send(schedules);
@@ -246,7 +348,7 @@ exports.findOneBazar = (req, res) => {
         }
 
         return res.status(500).send({
-            message: " Error retriving schedule with bus number " + req.params.busNumber
+            message: " Error retrieving schedule with bus number " + req.params.busNumber
         });
 
     });
@@ -273,7 +375,7 @@ exports.findOneNouhata = (req, res) => {
         }
 
         return res.status(500).send({
-            message: " Error retriving schedule with bus number " + req.params.busNumber
+            message: " Error retrieving schedule with bus number " + req.params.busNumber
         });
 
     });
@@ -284,25 +386,53 @@ exports.findOneNouhata = (req, res) => {
 
 
 
-//Retriving schedule of a single bus of Nouhata
+//Retriving schedule of a single bus of Morning
 exports.findOneMorning = (req, res) => {
     ScheduleShift.findById(req.params.busNumber)
     .then(schedules => {
         if(!schedules) {
             return res.status(404).send({
-                message:"Shedule not found for this bus number!!"
+                message:"Schedule is not found for this bus number!!"
             });
         }
         res.send(schedules);
     }).catch(err => {
         if (err.kind == 'ObjectId') {
             return res.status(404).send({
-                message: "Shedule not found with the bus number! " + req.paarams.busNumber
+                message: "Schedule is not found with the bus number! " + req.paarams.busNumber
             });
         }
 
         return res.status(500).send({
-            message: " Error retriving schedule with bus number " + req.params.busNumber
+            message: " Error retrieving schedule with bus number " + req.params.busNumber
+        });
+
+    });
+
+};
+
+
+
+
+//Retriving schedule of a single bus of Mid day
+exports.findOneMidDay = (req, res) => {
+    ScheduleShift.findById(req.params.busNumber)
+    .then(schedules => {
+        if(!schedules) {
+            return res.status(404).send({
+                message:"Schedule is not found for this bus number!!"
+            });
+        }
+        res.send(schedules);
+    }).catch(err => {
+        if (err.kind == 'ObjectId') {
+            return res.status(404).send({
+                message: "Schedule is not found with the bus number! " + req.paarams.busNumber
+            });
+        }
+
+        return res.status(500).send({
+            message: " Error retrieving schedule with bus number " + req.params.busNumber
         });
 
     });
@@ -448,7 +578,7 @@ ScheduleLocation.findByIdAndUpdate(req.params.busNumber, {
 
 
 
-//Updating Schedule of a bus of Nouhata
+//Updating Schedule of a bus of morning shift
 //for this purpose bus number will be used as a primary key
 
 exports.updateMorning = (req, res) => {
@@ -488,6 +618,97 @@ ScheduleShift.findByIdAndUpdate(req.params.busNumber, {
 
 
 };
+
+
+
+
+
+//Updating Schedule of a bus of mid day shift
+//for this purpose bus number will be used as a primary key
+
+exports.updateMidDay = (req, res) => {
+    //Validation request
+    if(!req.body.busNumber) {
+        return res.status(400).send({
+            message:"Schedule can not be null"
+        });
+    }
+
+
+//find schedule of a bus and update it
+ScheduleShift.findByIdAndUpdate(req.params.busNumber, {
+    busNumber: req.body.busNumber ,
+    destination: req.body.destination,
+    arivalTime: req.body.arivalTime,
+    departureTime: req.body.departureTime,
+    passengerType: req.body.passengerType || "Common or Combined bus"
+   },{new : true }
+).then(schedules => {
+    if(!schedules) { 
+    return res.status(404).send({
+        message: "Schedule not found for the bus number " + req.params.schedulesId
+        });
+    }
+     return res.send(schedules);
+}).catch(err => {
+    if (err.kind == 'ObjectId'){
+        return res.status(404).send ({
+            message: "Schedule not found for the bus " + req.params.schedulesId
+        });
+    }
+    return res.status(500).send({
+        message: "Error occuredd during to updating schedule " + req.params.schedulesId
+    });
+  });
+
+
+};
+
+
+
+
+
+
+//Updating Schedule of a bus of manpower and finance
+//for this purpose bus number will be used as a primary key
+
+exports.updateManpowerAndFinance = (req, res) => {
+    //Validation request
+    if(!req.body.annualCost) {
+        return res.status(400).send({
+            message:"Annual cost can not be null"
+        });
+    }
+
+
+//find schedule of a bus and update it
+ManpowerAndFinance.findByIdAndUpdate(req.params.annualCost, {
+    annualCost: req.body.annualCost,
+    studentFarePerYear: req.body.studentFarePerYear,
+    numberOfWorkers: req.body.numberOfWorkers,
+    chiefOfAuthority: req.body.chiefOfAuthority
+   },{new : true }
+).then(schedules => {
+    if(!schedules) { 
+    return res.status(404).send({
+        message: "Manpower and financial information is  not found ." + req.params.schedulesId
+        });
+    }
+     return res.send(schedules);
+}).catch(err => {
+    if (err.kind == 'ObjectId'){
+        return res.status(404).send ({
+            message: "Manpower and financial information is not found . " + req.params.schedulesId
+        });
+    }
+    return res.status(500).send({
+        message: "Error occured during to updating manpower and financial information. " + req.params.schedulesId
+    });
+  });
+
+
+};
+
 
 
 
@@ -578,7 +799,7 @@ exports.deleteNouhat = (req,res) => {
 
 
 
-//Deleting shedule of a specific bus from Nouhata routes
+//Deleting shedule of a specific bus from morning shift
 
 exports.deleteMorning = (req,res) => {
     ScheduleShift.findByIdAndRemove (req.params.busNumber)
@@ -595,6 +816,63 @@ exports.deleteMorning = (req,res) => {
         if (err.kind == 'ObjectId') {
             return res.status(404).send({
                 message: "Schedule is not found for the bus" + req.params.schedulesId
+            });
+        }
+        return res.status(500).send({
+            message: "Not possible to delete." + req.params.schedulesId        
+        });
+    });
+};
+
+
+
+
+//Deleting shedule of a specific bus from mid day shift
+
+exports.deleteMidDay = (req,res) => {
+    ScheduleShift.findByIdAndRemove (req.params.busNumber)
+    .then(schedules => {
+        if(!schedules) {
+            return res.status(404).send({
+                message: "Schedule of the bus is absent from the the database! " + req.params.schedulesId
+            });
+        }
+        res.send({
+            message:"Schedule of the bus is deleted from Morning shift."
+        });
+    }).catch(err => {
+        if (err.kind == 'ObjectId') {
+            return res.status(404).send({
+                message: "Schedule is not found for the bus" + req.params.schedulesId
+            });
+        }
+        return res.status(500).send({
+            message: "Not possible to delete." + req.params.schedulesId        
+        });
+    });
+};
+
+
+
+
+
+//Deleting manpower and financial information from database
+
+exports.deleteManpowerAndFinance = (req,res) => {
+    ManpowerAndFinance.findByIdAndRemove (req.params.annualCost)
+    .then(schedules => {
+        if(!schedules) {
+            return res.status(404).send({
+                message: "Manpower and financial information is absent from the the database! " + req.params.schedulesId
+            });
+        }
+        res.send({
+            message:"Manpower and financial information is deleted from the database."
+        });
+    }).catch(err => {
+        if (err.kind == 'ObjectId') {
+            return res.status(404).send({
+                message: "Manpower and financial information is not found." + req.params.schedulesId
             });
         }
         return res.status(500).send({
